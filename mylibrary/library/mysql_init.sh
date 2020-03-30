@@ -2,28 +2,24 @@
 source $1
 datadir=${datadir:-/var/lib/mysql}
 user=${user:-mysql}
-insecure=${insecure:-false}
+insecure=${insecure:-true}
 deffile=${deffile:-/etc/my.cnf}
-if test -d $datadir && test "systemctl status mysqld | grep dead"
+if [[ -d $datadir ]] && systemctl is-active mysqld >/dev/null 2>&1
 then
-  echo "MySQL already initialized"
+  # echo "MySQL already initialized"
   echo { \"changed\": false }
   exit 0
 else
-  if [[ $insecure == true ]]
+  if [[ $insecure == "true" ]]
   then
-    mysqld --initialize-insecure --user=mysql --datadir=$datadir --defaults-file=$deffile
-    echo "MySQL initialized"
+    mysqld --initialize-insecure --user=$user
+    # echo "MySQL initialized"
     echo { \"changed\": true }
     exit 0
   else
-    mysqld --initialize --user=mysql --datadir=$datadir --defaults-file=$deffile
-    echo "MySQL initialized"
+    mysqld --initialize --user=$user
+    # echo "MySQL initialized"
     echo { \"changed\": true }
     exit 0
   fi
 fi
-
-# cat << EOF
-# {"changed": true, "msg": "${msg}"}
-# EOF

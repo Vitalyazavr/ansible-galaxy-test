@@ -32,7 +32,7 @@ def main():
                           port = module.params['proxy_port'])
 
     config = config.replace('?','{').replace('!','}')
-    filename = '/etc/nginx/'+module.params['filename']+'.conf'
+    filename = '/etc/nginx/default.d/'+module.params['filename']+'.conf'
     results = {}
     if not os.path.exists(filename):
       with open(filename,"a") as file:
